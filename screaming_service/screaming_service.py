@@ -37,7 +37,7 @@ def publish_message(message):
         )
     )
     channel = connection.channel()
-    channel.queue_declare(queue=OUTGOING_QUEUE, durable=True)
+    channel.queue_declare(queue=OUTGOING_QUEUE, durable=False)
     channel.basic_publish(
         exchange='',
         routing_key=OUTGOING_QUEUE,
@@ -57,7 +57,7 @@ def consume_messages():
         )
     )
     channel = connection.channel()
-    channel.queue_declare(queue=INCOMING_QUEUE, durable=True)
+    channel.queue_declare(queue=INCOMING_QUEUE, durable=False)
     channel.basic_qos(prefetch_count=1)
     channel.basic_consume(queue=INCOMING_QUEUE, on_message_callback=callback)
     logger.info(f"Waiting for messages on queue {INCOMING_QUEUE}. To exit press CTRL+C")

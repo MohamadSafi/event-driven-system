@@ -75,7 +75,7 @@ def consume_messages():
                 logger.error("Failed to connect to RabbitMQ after multiple retries")
                 raise Exception("Failed to connect to RabbitMQ after multiple retries")
     channel = connection.channel()
-    channel.queue_declare(queue=INCOMING_QUEUE, durable=True)
+    channel.queue_declare(queue=INCOMING_QUEUE, durable=False)
     channel.basic_qos(prefetch_count=1)
     channel.basic_consume(queue=INCOMING_QUEUE, on_message_callback=callback)
     logger.info('Waiting for messages. To exit press CTRL+C')

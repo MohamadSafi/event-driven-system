@@ -46,3 +46,14 @@ services:
         condition: service_healthy
     env_file:
       - .env
+
+  locust:
+    build: ./locust
+    ports:
+      - "8089:8089"
+    environment:
+      - LOCUST_HOST=http://api_service:5000
+    volumes:
+      - ./locust:/mnt/locust
+    depends_on:
+      - api_service

@@ -30,7 +30,7 @@ def publish_message(message):
         )
     )
     channel = connection.channel()
-    channel.queue_declare(queue=RABBITMQ_QUEUE, durable=True)
+    channel.queue_declare(queue=RABBITMQ_QUEUE, durable=False)
     channel.basic_publish(
         exchange='',
         routing_key=RABBITMQ_QUEUE,
