@@ -1,0 +1,43 @@
+version: "3"
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672" # AMQP port
+      - "15672:15672" # Management UI
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
+  api_service:
+    build: ./api_service
+    container_name: api_service
+    ports:
+      - "5001:5000"
+    depends_on:
+      - rabbitmq
+
+  filter_service:
+    build: ./filter_service
+    container_name: filter_service
+    depends_on:
+      - rabbitmq
+
+  screaming_service:
+    build: ./screaming_service
+    container_name: screaming_service
+    depends_on:
+      - rabbitmq
+
+  publish_service:
+    build: ./publish_service
+    container_name: publish_service
+    depends_on:
+      - rabbitmq
+    environment:
+      SMTP_SERVER: "smtp-server-address"
+      SMTP_PORT: "587"
+      SMTP_USER: "email-address@innopolis.uni"
+      SMTP_PASSWORD: "top-secret-pswd"
+      RECIPIENTS: "recipient1@male.com,recipient2@female.com"
