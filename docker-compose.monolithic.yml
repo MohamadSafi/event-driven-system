@@ -2,7 +2,7 @@ version: "3"
 services:
 
   monolithic_service:
-    build: ./pipes_and_filters_system
+    build: ./Solutions/Monolithic
     container_name: monolithic_service
     ports:
       - "5001:5000"
@@ -14,7 +14,7 @@ services:
     ports:
       - "8089:8089"
     environment:
-      - LOCUST_HOST=http://monolithic_service:5000
+      - LOCUST_HOST=http://localhost:5001
     volumes:
       - ./locust:/mnt/locust
     depends_on:

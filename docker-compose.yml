@@ -16,7 +16,7 @@ services:
       retries: 5
 
   api_service:
-    build: ./api_service
+    build: ./Solutions/Distributed/api_service
     container_name: api_service
     ports:
       - "5001:5000"
@@ -25,21 +25,21 @@ services:
         condition: service_healthy
 
   filter_service:
-    build: ./filter_service
+    build: ./Solutions/Distributed/filter_service
     container_name: filter_service
     depends_on:
       rabbitmq:
         condition: service_healthy
 
   screaming_service:
-    build: ./screaming_service
+    build: ./Solutions/Distributed/screaming_service
     container_name: screaming_service
     depends_on:
       rabbitmq:
         condition: service_healthy
 
   publish_service:
-    build: ./publish_service
+    build: ./Solutions/Distributed/publish_service
     container_name: publish_service
     depends_on:
       rabbitmq:
