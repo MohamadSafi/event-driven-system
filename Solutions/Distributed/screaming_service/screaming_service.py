@@ -10,7 +10,6 @@ RABBITMQ_PASS = os.environ.get('RABBITMQ_PASS', 'guest')
 INCOMING_QUEUE = 'filtered_messages'
 OUTGOING_QUEUE = 'final_messages'
 
-# Configure logging
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'

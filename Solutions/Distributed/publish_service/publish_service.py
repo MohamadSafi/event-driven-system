@@ -17,7 +17,6 @@ SMTP_USER = os.environ.get('SMTP_USER', 'your_email@example.com')
 SMTP_PASSWORD = os.environ.get('SMTP_PASSWORD', 'your_password')
 RECIPIENTS = os.environ.get('RECIPIENTS', 'recipient1@example.com,recipient2@example.com').split(',')
 
-# Configure logging
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
@@ -52,7 +51,7 @@ def callback(ch, method, properties, body):
 def consume_messages():
     import time
     max_retries = 5
-    retry_delay = 5  # seconds
+    retry_delay = 5
     
     for retry in range(max_retries):
         try:

@@ -7,14 +7,12 @@ import logging
 
 app = Flask(__name__)
 
-# Configure logging
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
 
-# Queues for inter-process communication
 queue_input = Queue()
 queue_filter = Queue()
 queue_screaming = Queue()
@@ -27,7 +25,7 @@ def filter_process(input_queue, output_queue):
             message = input_queue.get()
             if message is None:
                 logger.info("Received stop signal, exiting filter process")
-                break  # Exit condition
+                break
             text = message.get('message', '')
             if any(stop_word in text.lower() for stop_word in STOP_WORDS):
                 logger.info(f"Message discarded due to stop-word: {text}")
@@ -44,7 +42,7 @@ def screaming_process(input_queue, output_queue):
             message = input_queue.get()
             if message is None:
                 logger.info("Received stop signal, exiting screaming process")
-                break  # Exit condition
+                break
             message['message'] = message['message'].upper()
             logger.info(f"Converted message to uppercase: {message['message']}")
             output_queue.put(message)
@@ -68,7 +66,7 @@ def publish_process(input_queue):
             logger.info(f"Received message from queue: {message}")
             if message is None:
                 logger.info("Received stop signal, exiting publish process")
-                break  # Exit condition
+                break
             alias = message.get('alias', '')
             text = message.get('message', '')
 
@@ -108,7 +106,6 @@ def submit_message():
 if __name__ == '__main__':
     try:
         logger.info("Starting pipes and filters system")
-        # Start the filter, screaming, and publish processes
         p_filter = Process(target=filter_process, args=(queue_input, queue_filter))
         p_screaming = Process(target=screaming_process, args=(queue_filter, queue_screaming))
         p_publish = Process(target=publish_process, args=(queue_screaming,))
@@ -117,11 +114,9 @@ if __name__ == '__main__':
         p_screaming.start()
         p_publish.start()
 
-        # Start the Flask app
         logger.info("Starting Flask application")
         app.run(host='0.0.0.0', port=5001)
 
-        # Wait for processes to finish (they won't unless we implement a shutdown)
         p_filter.join()
         p_screaming.join()
         p_publish.join()

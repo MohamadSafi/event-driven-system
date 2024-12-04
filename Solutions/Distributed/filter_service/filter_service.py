@@ -11,7 +11,6 @@ INCOMING_QUEUE = 'incoming_messages'
 OUTGOING_QUEUE = 'filtered_messages'
 STOP_WORDS = {'bird-watching', 'ailurophobia', 'mango'}
 
-# Configure logging
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
@@ -31,7 +30,7 @@ def callback(ch, method, properties, body):
 def publish_message(message):
     import time
     max_retries = 5
-    retry_delay = 5  # seconds
+    retry_delay = 5
     
     for retry in range(max_retries):
         try:
@@ -66,7 +65,7 @@ def publish_message(message):
 def consume_messages():
     import time
     max_retries = 5
-    retry_delay = 5  # seconds
+    retry_delay = 5
     
     for retry in range(max_retries):
         try:
