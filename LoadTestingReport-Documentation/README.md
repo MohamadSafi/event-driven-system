@@ -27,6 +27,10 @@ Infrastructure:
 Test Tools:
   - Locust for load testing
   - Docker containers
+Note:
+  - All tests were conducted on a single machine
+  - CPU usage > 100% indicates utilization across multiple CPU cores, as measured by `docker stats`.
+
 ```
 
 ### 2.2 Test Scenarios
@@ -39,6 +43,11 @@ Load Pattern:
   - Ramp-up: Progressive steps (1000, 5000, 10000)
 Type: Stress test with sustained load
 ```
+
+### Note on Resource Measurement
+
+Resource utilization metrics were gathered using `docker stats`, which provides real-time data on CPU, memory, and network usage for Docker containers.
+
 
 
 ## 3. Performance Results
@@ -85,8 +94,8 @@ Type: Stress test with sustained load
 
 ```yaml
 Performance:
-  Peak RPS: 564.8
-  Sustained RPS: 400-600
+  Avg RPS: 564.8
+  Sustained RPS: 500-700
   Stability: Moderate
   Error Rate: 9%
 Resource Usage:
@@ -99,7 +108,7 @@ Resource Usage:
 
 ```yaml
 Performance:
-  Peak RPS: 97.4
+  Avg RPS: 97.4
   Sustained RPS: 90-130
   Stability: Variable
   Error Rate: 17%
@@ -139,7 +148,7 @@ Response Times:
 
 ```yaml
 Pipes-and-Filters Architecture:
-  - Single process: 120.92% CPU
+  - Single service: 120.92% CPU
   - Efficient processing
 
 Distributed Architecture:
@@ -174,7 +183,6 @@ Strengths:
 
 Limitations:
   - Still significant error rate (9%)
-  - High CPU usage (120.92%)
 ```
 
 ### 5.2 Event-Driven Architecture
