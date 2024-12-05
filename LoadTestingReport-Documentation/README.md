@@ -9,10 +9,10 @@ A comprehensive load test was conducted comparing two architectural approaches:
 
 Key Findings:
 
-- Pipes-and-filters architecture demonstrated 10-15x better throughput
-- Significantly lower response times in the monolithic approach
-- Better resource efficiency in the monolithic implementation
-- Higher error rates and resource overhead in the distributed system
+- Pipes-and-filters architecture demonstrated 5.8x better throughput
+- Event-driven system showed higher latency and resource consumption
+- Better resource efficiency in the pipes-and-filters implementation
+- Higher failure rates in both systems but more pronounced in event-driven architecture
 
 ## 2. Test Environment
 
@@ -25,7 +25,7 @@ Infrastructure:
   Storage: SSD-backed containers
 
 Test Tools:
-  - Locust version: Latest
+  - Locust for load testing
   - Docker containers
   - System monitoring tools
 ```
@@ -33,16 +33,16 @@ Test Tools:
 ### 2.2 Test Scenarios
 
 ```yaml
-Duration: 10 minutes
+Duration: ~20 minutes
 Load Pattern:
   - Start: 0 users
   - Target: 10,000 concurrent users
-  - Ramp-up: Progressive
+  - Ramp-up: Progressive steps (1000, 5000, 10000)
 Type: Stress test with sustained load
 ```
 
-## 3. Performance Results
 
+## 3. Performance Results
 
 
 
@@ -56,7 +56,7 @@ Type: Stress test with sustained load
 
 <div align="center">
 
-![Pipes-and-Filters Architecture Resource Usage](./mono-resources.png)
+![Pipes-and-Filters Architecture Resource Usage](./mono-resources.jpg)
 **Figure 2: Pipes-and-Filters Architecture Resource Usage**
 
 </div>
@@ -65,7 +65,7 @@ Type: Stress test with sustained load
 
 <div align="center">
 
-![Distributed System Performance](./distributed-charts.jpg)
+![Distributed System Performance](./dist-charts.jpg)
 **Figure 3: Distributed Architecture Load Test Results**
 
 </div>
@@ -74,7 +74,7 @@ Type: Stress test with sustained load
 
 <div align="center">
 
-![Distributed System Resource Usage](./distributed-resources.jpg)
+![Distributed System Resource Usage](./dist-resources.jpg)
 **Figure 4: Distributed System Resource Usage**
 
 </div>
@@ -84,33 +84,32 @@ Type: Stress test with sustained load
 
 #### Pipes-and-Filters Architecture
 
-
 ```yaml
 Performance:
-  Peak RPS: 908.1
-  Sustained RPS: 800-1000
-  Stability: High
-  Error Rate: 4%
+  Peak RPS: 564.8
+  Sustained RPS: 400-600
+  Stability: Moderate
+  Error Rate: 9%
 Resource Usage:
-  CPU: 125.92%
-  Memory: 100.6MiB
-  Network I/O: 114MB / 96.9MB
+  CPU: 120.92%
+  Memory: 938.3MiB
+  Network I/O: 299MB / 226MB
 ```
 
 #### Distributed Architecture
 
 ```yaml
 Performance:
-  Peak RPS: 52.8
-  Sustained RPS: 40-50
-  Stability: Moderate to Low
-  Error Rate: 26%
+  Peak RPS: 97.4
+  Sustained RPS: 90-130
+  Stability: Variable
+  Error Rate: 17%
 Resource Usage:
-  Total CPU: ~200%
-  Memory: ~2.2GB
-  Network I/O: Multiple streams
-  - RabbitMQ: 86.37% CPU, 600.3MB memory
-  - API Service: 108.57% CPU, 1.112GB memory
+  CPU Distribution:
+    - RabbitMQ: 92.40%
+    - Filter Service: 27.24%
+    - Other Services: 26-106%
+  Memory: Multiple services totaling ~13GB
 ```
 
 ### 3.2 Response Time Analysis
@@ -119,20 +118,20 @@ Resource Usage:
 
 ```yaml
 Response Times:
-  Median: 1,000-2,000ms
-  95th percentile: ~20,000ms
-Pattern: Linear scaling
-Stability: Consistent
+  Median: 6,300ms
+  95th percentile: 22,000ms
+  99th percentile: 28,000ms
+  Average: 8,003.63ms
 ```
 
 #### Distributed Architecture
 
 ```yaml
 Response Times:
-  Median: ~150,000ms
-  95th percentile: >200,000ms
-Pattern: Exponential scaling
-Stability: Degrading under load
+  Median: 57,000ms
+  95th percentile: 100,000ms
+  99th percentile: 113,000ms
+  Average: 59,860.81ms
 ```
 
 ## 4. Resource Utilization Analysis
@@ -141,29 +140,27 @@ Stability: Degrading under load
 
 ```yaml
 Pipes-and-Filters Architecture:
-  - Single process: 125.92% CPU
-  - Efficient multi-core utilization
-  - Stable under load
+  - Single process: 120.92% CPU
+  - Efficient processing
 
 Distributed Architecture:
-  - Combined usage: ~200% CPU
-  - Higher overhead
-  - Message broker bottleneck (86.37%)
+  - Multiple services with varying loads
+  - RabbitMQ: 92.40%
+  - Filter Service: 27.24%
+  - Higher overall system overhead
 ```
 
 ### 4.2 Memory Consumption
 
 ```yaml
 Pipes-and-Filters Architecture:
-  - Total usage: 100.6MiB
-  - Efficient memory utilization
-  - Low overhead
+  - Total usage: 938.3MiB
+  - 11.97% of allocated memory
 
 Distributed Architecture:
-  - Total usage: ~2.2GB
-  - High overhead from service isolation
-  - Message broker: 600.3MB
-  - API Service: 1.112GB
+  - RabbitMQ: 1.072GiB
+  - Filter Service: 11.58MiB
+  - Multiple services with varying memory usage
 ```
 
 ## 5. Architecture-Specific Observations
@@ -172,67 +169,36 @@ Distributed Architecture:
 
 ```yaml
 Strengths:
-  - Higher throughput capacity
-  - Better resource efficiency
-  - Lower latency
-  - Predictable scaling
+  - Higher throughput (564.8 RPS)
+  - Better response times
+  - More efficient resource usage
 
 Limitations:
-  - Fixed processing pipeline
-  - Less flexible for changes
+  - Still significant error rate (9%)
+  - High CPU usage (120.92%)
 ```
 
-### 5.2 Event-Driven (Distributed)
+### 5.2 Event-Driven Architecture
 
 ```yaml
 Strengths:
-  - Better component isolation
-  - Independent scaling possible
+  - Service isolation
+  - Distributed resource usage
 
 Limitations:
+  - Lower throughput (97.4 RPS)
   - Higher latency
-  - Resource overhead
-  - Complex state management
-  - Message broker bottleneck
+  - Higher error rate (17%)
+  - Complex resource management
 ```
 
+## 6. Conclusions
 
-## 6. Test Limitations
+The load testing revealed that the pipes-and-filters architecture outperforms the event-driven architecture, showing:
 
-```yaml
-  - Limited test duration (10 minutes)
-  - Single environment testing
-  - Specific hardware configuration
-  - Container-based deployment
-```
+- 5.8x higher throughput
+- 7.5x better response times
+- More efficient resource utilization
+- Lower error rates (9% vs 17%)
 
-## 7. Performance Metrics Summary
-
-```yaml
-Throughput:
-  Monolithic: 908.1 RPS
-  Distributed: 52.8 RPS
-  Difference: 17.2x higher in monolithic
-
-Error Rates:
-  Monolithic: 4%
-  Distributed: 26%
-  Impact: Critical in distributed
-
-Resource Efficiency:
-  CPU Efficiency:
-    Monolithic: Better (125.92% for all operations)
-    Distributed: Lower (200% spread across services)
-
-  Memory Efficiency:
-    Monolithic: Better (100.6MiB total)
-    Distributed: Lower (2.2GB total)
-```
-
-## 8. Conclusions
-
-The load testing revealed that the monolithic (pipes-and-filters) architecture significantly outperforms the distributed (event-driven) architecture, showing:
-
-- 17.2x higher throughput
-- 22x lower memory usage
-- 6.5x lower error rates
+However, both systems showed significant room for optimization, particularly in error rates and response times under high load.

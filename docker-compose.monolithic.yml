@@ -14,7 +14,7 @@ services:
     ports:
       - "8089:8089"
     environment:
-      - LOCUST_HOST=http://localhost:5001
+      - LOCUST_HOST=http://monolithic_service:5000
     volumes:
       - ./locust:/mnt/locust
     depends_on:
