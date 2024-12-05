@@ -27,13 +27,12 @@ Infrastructure:
 Test Tools:
   - Locust for load testing
   - Docker containers
-  - System monitoring tools
 ```
 
 ### 2.2 Test Scenarios
 
 ```yaml
-Duration: ~20 minutes
+Duration: ~10 minutes
 Load Pattern:
   - Start: 0 users
   - Target: 10,000 concurrent users
@@ -109,7 +108,7 @@ Resource Usage:
     - RabbitMQ: 92.40%
     - Filter Service: 27.24%
     - Other Services: 26-106%
-  Memory: Multiple services totaling ~13GB
+  Memory: Multiple services totaling ~2.5GB
 ```
 
 ### 3.2 Response Time Analysis
